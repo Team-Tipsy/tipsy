@@ -33,3 +33,5 @@ router.get('/placeholderforGlass',
 dranksController.getByGlass,
   (req, res) => res.status(200).json(res.locals.drinks)
 );
+
+module.exports = router;

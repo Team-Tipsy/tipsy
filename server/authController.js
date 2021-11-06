@@ -8,40 +8,53 @@ const authController = {};
 
 authController.createUser = (req, res, next) => {
     try{
-        const { username, password, email} = req.body;
-
+        // user will enter the following info into fields on the front end signup page. 
+        // destructure user inputs from req.body
+        const { username, password, firstName, lastName, email} = req.body;
+        let hashedPassword;
+        // if this doesn't work, check out https://node-postgres.com/features/queries for another option using parameterized queries
+        const userQuery = `INSERT INTO user(firstName, lastName, email) VALUES (${firstName}, ${lastName}, ${email})`;
+        // if lastval() doesn't work, look into doing a query to find our newly created user and saving its _id to a variable
+        const userLoginInfoQuery = `INSERT INTO userLoginInfo(user_id username, password) VALUES (${lastval()}, ${username}, ${hashedPassword})`;
+        // hash the user inputted password using salt length 10
         bcrypt.hash(password, 10, (err, hash) => {
-            // do I need to add user_id, fave_id and repo_id? would I auto generate a number for those?
-            // how do I pass in JS variables? will need to pass in username, hash, and email at a minimum
-            db.query('INSERT INTO user(username, password, email) VALUES (I CANNOT FIGURE OUT HOW TO PASS IN JS VARIABLES)') 
-        })
+            if (err) return next(err);
+            hashedPassword = hash;
+            db.query(userQuery)
+            .then(() => {
+                db.query(userLoginInfoQuery)
+            })
+            .then(() => {
+                return next()
+            })
+            .catch((err) => {
+                return next(err);
+            });
+        });
     } catch(err) {
         return next(err)
-    }
-}
-;
+    };
+};
 
 authController.verifyUser = (req, res, next) => {
     try{
         const {username, password} = req.body;
-        // not sure if this is right. I'm hashing the user input
-        password = bcrypt.hash(password, 10, (err, hash) => {
+        let hashedPassword;
+        const query = `SELECT user(${username}, ${hashedPassword})`
+        bcrypt.hash(password, 10, (err, hash) => {
             if (err) return next(err);
-            else return hash;
-        })
-        User.findOne({username: username, password: password})
-        .then(user => {
-            if (!user || !user.password || user.password !== password) {
-                res.redirect('/PLACEHOLDER');
-                return;
-              }
-              console.log('user verified')
-              return next();
-        })
+            hashedPassword = hash;
+            db.query(query)
+            .then(() => {
+                return next();
+            })
+            .catch((err) => {
+                return next(err);
+            });
+        });
     } catch(err) {
         return next(err)
-    }
-
+    };
 };
 
 authController.setCookie = () => {
@@ -51,6 +64,8 @@ authController.setCookie = () => {
 authController.setSSIDCookie = () => {
 
 };
+
+
 
 
 
