@@ -13,9 +13,11 @@ function SignupForm() {
     fetch('/signup', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ firstName: fn, lastName: ln, email: em, username: un, password: pw })
+      body: JSON.stringify({ username: un, password: pw, firstName: fn, lastName: ln, email: em })
+      // username, password, firstName, lastName, email
     }).then(() => {
       console.log('signed in')
+      // get userId back, and create localStorage item
     })
   }
   

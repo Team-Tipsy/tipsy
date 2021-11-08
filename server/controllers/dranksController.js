@@ -12,7 +12,7 @@ dranks.handleSubmit = (req, res, next) => {
   const queryMet = [];
   const catCache = {};
   // query the API with the ingredients our user entered on the homepage.
-  fetch(`https://www.thecocktaildb.com/api/json/v2/${apiKey}/filter.php?i=${req.params.ingredients}`)
+  fetch(`https://www.thecocktaildb.com/api/json/v2/${apiKey}/filter.php?i=${req.query.ingredients}`)
       .then(data => data.json())
       .then(async (data) => {
         // the api returns an array if any drinks are found
@@ -28,7 +28,7 @@ dranks.handleSubmit = (req, res, next) => {
           .then(data => data.json())
           .then(data => {
             // if the current drink's category matches the category corresponding to the user's input mood
-            if (data.drinks[0].strCategory === req.params.category) {
+            if (data.drinks[0].strCategory === req.query.category) {
               // push that drink object into an array
               queryMet.push(data.drinks[0]);
               //  { res.locals.drink = data.drinks[0];

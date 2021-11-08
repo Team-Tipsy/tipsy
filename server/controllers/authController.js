@@ -19,7 +19,7 @@ authController.createUser = (req, res, next) => {
         const userQuery = `INSERT INTO user(first_name, last_name, email) VALUES (${firstName}, ${lastName}, ${email})`;
         // if lastval() doesn't work, look into doing a query to find our newly created user and saving its _id to a variable
         // lastval() notes are here https://www.postgresql.org/docs/current/functions-sequence.html
-        const userLoginInfoQuery = `INSERT INTO user_login_info(user_id username, password) VALUES (${lastval()}, ${username}, ${hashedPassword})`;
+        const userLoginInfoQuery = `INSERT INTO user_login(user_id username, password) VALUES (${lastval()}, ${username}, ${hashedPassword})`;
         // hash the user inputted password using salt length 10
         bcrypt.hash(password, 10, (err, hash) => {
             //______________
@@ -59,7 +59,7 @@ authController.verifyUser = (req, res, next) => {
         //______________
         const {username, password} = req.body;
         let hashedPassword;
-        const query = `SELECT user_login_info(${username}, ${hashedPassword})`;
+        const query = `SELECT user_login(${username}, ${hashedPassword})`;
         bcrypt.hash(password, 10, (err, hash) => {
             //______________
             console.log(`attempting to hash and salt password in verifyUser middleware`);
@@ -71,7 +71,12 @@ authController.verifyUser = (req, res, next) => {
                 //______________
                 console.log(`received data from database query in verifyUser middleware`);
                 //______________
-                if (!data) return next(err);
+                if (!data) {
+                    // perhaps instead of returning next(err), assign res.locals.userId to null and send it back to front end
+                    return next(err);
+                }
+                // need to send userID back to frontend
+                // res.locals.userId = 
                 return next();
             })
             .catch((err) => {

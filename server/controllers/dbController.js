@@ -111,7 +111,7 @@ dbControllers.getRecipes = (req, res, next) => {
 dbControllers.addRecipe = (req, res, next) => {
   const recipeKeys = ['user_id', 'name', 'instructions', 'ingredient_list'];
   const recipeValues = [
-    req.params.id,
+    req.params.user_id,
     req.body.name,
     req.body.instructions,
     req.body.ingredients,

@@ -7,7 +7,7 @@ const router = express.Router();
 // ALL API GET REQUESTS
 
 // router for main user submit function
-router.get('/placeholderforHandleSubmit',
+router.get('/handleSubmit',
 dranksController.handleSubmit,
   (req, res) => res.status(200).json(res.locals.drinks)
 );

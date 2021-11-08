@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-
+import  { Redirect } from 'react-router-dom'
 
 function RecipeForm() {
   const [ name, setName ] = useState('');
@@ -19,11 +19,32 @@ function RecipeForm() {
   // fetch to handle submit
   const handleSubmit = () => {
     // const ingredientList = makeArray(ingredients);
+    const id = JSON.parse(localStorage.getItem('userId'));
+
     const body = {
       name,
       ingredients,
       instructions
     }
+
+    fetch(`/addrecipe/${id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'Application/JSON'
+      },
+      body: JSON.stringify(body)
+    })
+      .then(() => {
+        setName('');
+        setIngredients('');
+        setInstructions('');
+        <Redirect to={{
+          pathname: "/mydrinks",
+        }} />
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   return (

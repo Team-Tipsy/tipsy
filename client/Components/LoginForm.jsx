@@ -27,7 +27,6 @@ function LoginForm() {
         setMessage('Success!');
         // redirect user to home page
         window.location.href='http://localhost:8080/';
-      
       // if user is not authenticated
         // setMessage('Invalid username/password. Please try again.');
         // console.log('Invalid username/password');
