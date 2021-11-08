@@ -34,4 +34,6 @@ dranksController.getByGlass,
   (req, res) => res.status(200).json(res.locals.drinks)
 );
 
+// END API GET REQUESTS
+
 module.exports = router;
