@@ -1,0 +1,26 @@
+CREATE TABLE user_login (
+  user_id serial PRIMARY KEY,
+  username varchar(25) UNIQUE,
+  password varchar(70) NOT NULL
+)
+
+CREATE TABLE users (
+  user_id INT REFERENCES user_login(user_id),
+  first_name varchar(25) NOT NULL,
+  last_name varchar(25) NOT NULL,
+  email varchar(50) NOT NULL
+)
+
+CREATE TABLE faves (
+  fave_id int PRIMARY KEY,
+  user_id INT REFERENCES user_login(user_id),
+  cocktail_id varchar(25) NOT NULL
+)
+
+CREATE TABLE recipes (
+  recipes_id int PRIMARY KEY,
+  user_id INT REFERENCES user_login(user_id),
+  name VARCHAR (20) not null,
+  instructionList text [],
+  ingredients text []
+)

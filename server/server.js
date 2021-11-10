@@ -14,11 +14,6 @@ app.use('/faves', faveRouter);
 app.use('/recipes', recipeRouter);
 
 
-// catch-all route handler for any requests to an unknown route
-app.use('*', (req, res) =>
-  res.status(404).send("Go home Rebecca, you're drunk")
-);
-
 // production build static serve..ask about get request
 if (process.env.NODE_ENV === 'production') {
   // statically serve everything in the build folder on the route '/build'
@@ -28,6 +23,13 @@ if (process.env.NODE_ENV === 'production') {
     return res.status(200).sendFile(path.join(__dirname, '../index.html'));
   });
 }
+
+// catch-all route handler for any requests to an unknown route
+app.use('*', (req, res) =>
+  res.status(404).send("Go home Rebecca, you're drunk")
+);
+
+
 
 // universal error handler
 app.use((err, req, res, next) => {
