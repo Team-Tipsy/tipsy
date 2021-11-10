@@ -3,9 +3,44 @@ const path = require('path');
 const fetch = require('node-fetch');
 const apiKey = 9973533;
 
+// import drink utils to get drinks from local file
+const drinkUtils = require('../../utils/drink.js');
+
 const dranks = {};
 
 // API GET REQUESTS
+
+dranks.handleSubmit2 = (req, res, next) => {
+  try{
+    console.log('handleSubmit2 reached in server');
+
+    // CASE 1: No category, no ingredients --> return random drink 
+    if (req.query.ingredients === '' && req.query.category === ''){
+      // get random drink
+      let drink = drinkUtils.getRandomDrink(); 
+      res.locals.drinks = [drink]; 
+      
+    }
+
+    // CASE 2: Only category 
+
+    // CASE 3: Only ingredients 
+
+    // CASE 4: Both ingredients + category
+
+    console.log('req.query.ingredients:');
+    console.log(typeof req.query.ingredients); 
+
+    console.log('req.query.category:');
+    console.log(typeof req.query.category);
+
+    return next(); 
+
+  } catch(error){
+    return next(error);
+  }
+}
+
 
 dranks.handleSubmit = (req, res, next) => {
   console.log('handleSubmit reached in server');

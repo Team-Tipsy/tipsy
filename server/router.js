@@ -19,7 +19,7 @@ authController.verifyUser,
 
 // router for main user submit function
 router.get('/handleSubmit',
-dranksController.handleSubmit,
+  dranksController.handleSubmit2,
   (req, res) => res.status(200).send(res.locals.drinks)
 );
 
