@@ -5,6 +5,7 @@ const apiKey = 9973533;
 
 // import drink utils to get drinks from local file
 const drinkUtils = require('../../utils/drink.js');
+const { resourceLimits } = require('worker_threads');
 
 const dranks = {};
 
@@ -19,10 +20,18 @@ dranks.handleSubmit2 = (req, res, next) => {
       // get random drink
       let drink = drinkUtils.getRandomDrink(); 
       res.locals.drinks = [drink]; 
-      
+      return next(); 
     }
 
     // CASE 2: Only category 
+    if (req.query.ingredients === '' && req.query.category.length > 0){
+      console.log('case 2'); 
+      let drinks = drinkUtils.getDrinksByCategory(req.query.category);
+      // grab random drink, return it inside array becayse that's what the 
+      // frontend is expecting 
+      res.locals.drinks = [drinks[Math.floor(Math.random() * drinks.length)]];
+      return next();
+    }
 
     // CASE 3: Only ingredients 
 

@@ -9,4 +9,11 @@ drinkUtils.getRandomDrink = () => {
     return drinks[Math.floor(Math.random() * drinks.length)];
 }
 
+drinkUtils.getDrinksByCategory = (category) => {
+    // return random drink from all drinks 
+    console.log(drinks.filter(e => e.strCategory === category));
+    return drinks.filter(e => e.strCategory === category);
+}
+
+
 module.exports = drinkUtils;
