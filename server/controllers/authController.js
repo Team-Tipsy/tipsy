@@ -4,47 +4,51 @@ const bcrypt = require ('bcryptjs');
 const authController = {};
 
 /*_______THIS WAS NOT FULLY IMPLEMENTED, for some reason second query request isn't working.. Good luck!_______*/
-authController.createUser = (req, res, next) => {
+/*_______Moved the return next() to the second query_______*/
+
+authController.createUser = async (req, res, next) => {
     const { username, password, firstName, lastName, email } = req.body;
-    const queryStr = `INSERT INTO users (first_name, last_name, email) VALUES ('${firstName}', '${lastName}', '${email}') RETURNING user_id`;
-    const hash = bcrypt.hashSync(password, 10);
-    console.log(hash);
-    db.query(queryStr)
-      .then((data) => {
-        console.log(data.rows[0].user_id);
-        res.locals.userId = data.rows[0].user_id;
-        return next();
-      }).then(() => {
-        db.query(`INSERT INTO user_login(user_id username, password) VALUES (${res.locals.userId}, '${username}', ${hash})`);
-      })
-      .catch((err) => {
-        return next({
-          message: err.message,
-          log: 'error in hhhh middleware',
-        });
-      });
+    const encrypted = await bcrypt.hash(password, 10);
+    const queryAddUser = `INSERT INTO user_login (username, password) VALUES ($1, $2) RETURNING *`;
+    const addUserValues = [username, encrypted];
+
+    try {
+      const response = await db.query(queryAddUser,addUserValues)
+      res.locals.userId = response.rows[0].user_id
+      const queryStr = `INSERT INTO users (user_id, first_name, last_name, email) VALUES ('${res.locals.userId}', '${firstName}', '${lastName}', '${email}')`
+      db.query(queryStr)
+      return next();
+    } catch (err){
+      console.log(`entered big "catch block" of createUser middleware`);
+      return next(err);
+    }
+    
+ 
 };
 
 /*_______THIS WAS NOT FULLY IMPLEMENTED, it seems like db.query is running before bcrypt.hash finishes running, 
 but async or promise chaining is not working _______*/
-authController.verifyUser = (req, res, next) => {
+/*_______Instead of hashing the password, I use bcrypt.compare the stored pw vs the enter pw_______*/
+
+authController.verifyUser = async (req, res, next) => {
     try{
-        const {username, password} = req.body;
-        const hash = bcrypt.hash(password, 10);
-        db.query(`SELECT username, password FROM user_login WHERE username = '${username}' AND password = '${hash}'`)
-        .then(data => {
-            console.log(`data.userId ===`, data.userId);
-            if (!data) res.locals.userId = null;
-            else res.locals.userId = data.userId;
-            console.log(`res.locals.userId === `, res.locals.userId)
-            return next();
-        })
-        .catch((err) => {
-            //______________
-            console.log(`caught an error in database query in verifyUser middleware`);
-            //______________
-            return next(err);
-        });
+      const {username, password} = req.body;
+      const query = `SELECT * FROM user_login WHERE username = '${username}'`
+      const resFromDB = await db.query(query)
+      if (!resFromDB.rows.length){
+        res.status(404)
+        return next();
+      }
+      const user = resFromDB.rows[0]
+      const valid = await bcrypt.compare(password,user.password)
+      if(!valid){
+        res.status(401)
+        return next();
+      } else {
+        res.status(200)
+        res.locals.userId = user.userId
+        return next();
+      }
     } catch(err) {
         //______________
         console.log(`entered big "catch block" of verifyUser middleware`);

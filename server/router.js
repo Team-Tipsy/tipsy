@@ -9,13 +9,13 @@ const router = express.Router();
 // ALL API GET REQUESTS
 
 /*_______ROUTES TO /signup AND /login WERE COMMENTED OUT BECAUSE AUTHCONTROLLER FUNCTIONALITY IS NOT FINALIZED _______*/
-// router.post('/signup', 
-// authController.createUser,
-//     (req, res) => res.status(200).send("nothing"));
+router.post('/signup', 
+authController.createUser,
+    (req, res) => res.status(200).send("nothing"));
 
-// router.post('/login',
-// authController.verifyUser,
-//     (req, res) => res.status(200).json(res.locals.userId)); 
+router.post('/login',
+authController.verifyUser,
+    (req, res) => res.status(200).json(res.locals.userId)); 
 
 // router for main user submit function
 router.get('/handleSubmit',
