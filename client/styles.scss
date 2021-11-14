@@ -1,9 +1,87 @@
 * {
   font-family: 'Sora', sans-serif;
+  background-color: #D4DFC7;
 }
 
 body {
   margin: 0;
   padding: 0;
   display: flex;
+}
+
+input[type="text"] {
+  height: 30px;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#moodList {
+  height: 50px;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+option {
+  height: 30px;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.mood0 {
+  color: lightgray;
+}
+
+input[type="submit"] {
+  height: 40px;
+  border: none;
+  background-color: #6F9283;
+  border-radius: 10px;
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+button {
+  height: 40px;
+  border: none;
+  background-color: #6F9283;
+  border-radius: 10px;
+  color: white;
+  padding: 10px;
+  margin-top: 20px;
+}
+
+input[type="password"] {
+  height: 30px;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.addrecipe {
+  width: 300px;
+}
+
+.recipeinstructions {
+  width: 300px;
+  line-height: 2em !important;
+  border: none;
+  background-color: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.drink-info {
+  margin: 100px;
+}
+
+svg {
+  margin-left: 10px;
 }

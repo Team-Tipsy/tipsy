@@ -55,7 +55,7 @@ function MainContainer(props) {
       Left = <Image src={drinkObj.strDrinkThumb} /> // do i need to use 'require'?
       break;
     case 'favorites':
-      Left = <MyList userFavs={userFavs}/>
+      Left = <MyList title='My Favorite Drinks' userFavs={userFavs}/>
   }
 
   // Logic for switching which components will render on the right
@@ -64,11 +64,11 @@ function MainContainer(props) {
     case 'homepage':
       Right = <SearchForm />
       break;
-    case 'drink':
-      Right = <DrinkInfo title='My Favorite Drinks' drinkObj={drinkObj}/>
+    case 'drinkInfo':
+      Right = <DrinkInfo drinkObj={drinkObj}/>
       break;
     case 'recipes':
-      Right = <MyList userRecipes={userRecipes} />
+      Right = <MyList title='My Favorite Recipes' userRecipes={userRecipes} />
       break;
     case 'signup':
       Right = <SignupForm />

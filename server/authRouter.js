@@ -1,15 +1,14 @@
 const express = require('express');
-const { setSSIDCookie } = require('./authController');
-const authController = require('./authController');
-const router = express.Router();
+const authController = require('./controllers/authController');
+const authRouter = express.Router();
 
 //all endpoints are placeholders 
-router.post('/signup', 
-authController.createUser, setSSIDCookie,
-    (req, res) => res.status(200).redirect('/PLACEHOLDER ENDPOINT')); // need to chat with front end team to find out what they want to happen when user is created
+authRouter.post('/signup', 
+authController.createUser,
+    (req, res) => res.status(200).send('/PLACEHOLDER ENDPOINT'));
 
-router.get('/login',
-authController.verifyUser, setSSIDCookie,
-    (req, req) => res.status(200).redirect('/PLACEHOLDER ENDPOINT')); // need to chat with front end team to find out what they want to happen when user logs in successfully
+authRouter.get('/login',
+authController.verifyUser,
+    (req, res) => res.status(200).send('/PLACEHOLDER ENDPOINT')); 
 
 module.exports = authRouter;

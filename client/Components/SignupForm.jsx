@@ -10,7 +10,7 @@ function SignupForm() {
 
   const handleSignUp = (fn, ln, em, un, pw) => {
     console.log(JSON.stringify({ firstName: fn, lastName: ln, email: em, username: un, password: pw }));
-    fetch('/signup', {
+    fetch('/api/signup', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: un, password: pw, firstName: fn, lastName: ln, email: em })

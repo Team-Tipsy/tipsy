@@ -3,6 +3,7 @@ import MainContainer from '../Components/MainContainer.jsx';
 
 function DrinkPage(props) {
   const { drinkObj } = props.location.state; 
+  console.log('DrinkPage: ', drinkObj);
   // if drinkObj is empty, make get request to API using the drink name 
 
   return (

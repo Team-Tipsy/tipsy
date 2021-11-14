@@ -97,7 +97,7 @@ dbControllers.getRecipes = (req, res, next) => {
   const values = [req.params.id];
   db.query(queryStr, values)
     .then((data) => {
-      res.locals.faves = data.rows[0];
+      res.locals.recipes = data.rows;
       return next();
     })
     .catch((err) => {
@@ -111,14 +111,14 @@ dbControllers.getRecipes = (req, res, next) => {
 dbControllers.addRecipe = (req, res, next) => {
   const recipeKeys = ['user_id', 'name', 'instructions', 'ingredient_list'];
   const recipeValues = [
-    req.params.user_id,
+    req.params.id,
     req.body.name,
     req.body.instructions,
     req.body.ingredients,
   ];
-
+  console.log(recipeValues);
   const queryStr = `
-  INSERT into recipes r (${recipeKeys})
+  INSERT into recipes (${recipeKeys})
   VALUES ($1, $2, $3, $4) 
   RETURNING *
   `;

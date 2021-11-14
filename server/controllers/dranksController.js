@@ -8,6 +8,7 @@ const dranks = {};
 // API GET REQUESTS
 
 dranks.handleSubmit = (req, res, next) => {
+  console.log('handleSubmit reached in server');
   const ids = [];
   const queryMet = [];
   const catCache = {};
@@ -17,9 +18,12 @@ dranks.handleSubmit = (req, res, next) => {
       .then(async (data) => {
         // the api returns an array if any drinks are found
         // for every drink the query returns
-        for (drink in data.drinks) {
-          // grab the drink's id and push to an array
-          ids.push(data.drinks[drink].idDrink);
+        if (data.drinks !== 'None Found') {
+          for (drink of data.drinks) {
+            // grab the drink's id and push to an array
+            //ids.push(data.drinks[drink].idDrink);
+            ids.push(drink.idDrink);
+          }
         }
         // once ids has been fully populated
         for (let i = 0; i < ids.length; i++) {
@@ -28,6 +32,7 @@ dranks.handleSubmit = (req, res, next) => {
           .then(data => data.json())
           .then(data => {
             // if the current drink's category matches the category corresponding to the user's input mood
+            //console.log(data);
             if (data.drinks[0].strCategory === req.query.category) {
               // push that drink object into an array
               queryMet.push(data.drinks[0]);
@@ -35,13 +40,14 @@ dranks.handleSubmit = (req, res, next) => {
               // return next(); } <-- & ^ code we might still need
             } else {
               // otherwise, store the category in a cache and log that category's appearance frequency
-              catCache[data/drinks[0].strCategory] ? catCache[data/drinks[0].strCategory] += 1 : catCache[data/drinks[0].strCategory] = 1;
+              catCache[data.drinks[0].strCategory] ? catCache[data.drinks[0].strCategory] += 1 : catCache[data.drinks[0].strCategory] = 1;
             }
           })
         }
         // if the query returned no strict results
         if (queryMet.length === 0) {
           // check the cache, were any drinks found using the user's ingredients at all?
+          console.log('Reached queryMet.length = 0')
           const catKeys = Object.keys(catCache);
           let max = 0;
           let response;
@@ -53,18 +59,19 @@ dranks.handleSubmit = (req, res, next) => {
           }
           // if so, suggest the user switch their mood to the most frequent category appearance returned by the ingredients query.
           if (response) {
-            res.locals.drinks = {"suggestion": `Sorry, no drinks with those ingredients fit your mood.\n But if you were feeling ${response} then we found some recipes for you!`};
+            res.locals.drinks = {suggestion: `Sorry, no drinks with those ingredients fit your mood.\n But if you were feeling ${response} then we found some recipes for you!`};
             return next();
           } else {
             // if no drinks were found using their ingredients
             // assign a null object to res.locals for the front end to interpet
-            res.locals.drinks = {"suggestion": "We're sorry, no drinks using all of those ingredients were found. Try modifying your search."};
+            res.locals.drinks = {suggestion: "We're sorry, no drinks using all of those ingredients were found. Try modifying your search."};
             // and continue the middleware chain
             next();
           }
         } else {
           // if the query DID return results, assign them to res.locals
           res.locals.drinks = queryMet;
+          console.log(res.locals.drinks);
           // and continue the middleware chain
           next();
         }

@@ -11,7 +11,7 @@ function LoginForm() {
     console.log(JSON.stringify({ username, password }));
     
     // fetch is built into the browser
-    fetch('/login', {
+    fetch('/api/login', {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password })
@@ -23,7 +23,7 @@ function LoginForm() {
       // if user is authenticated
         console.log('logged in')
         // set userId in local storage to persist through application
-        localStorage.setItem('userId', 'jennifer123');
+        localStorage.setItem('userId', 1);
         setMessage('Success!');
         // redirect user to home page
         window.location.href='http://localhost:8080/';
@@ -49,7 +49,7 @@ function LoginForm() {
         <form>
           <input
             id="login-password"
-            type="text"
+            type="password"
             // placeholder="login password placeholder..."
             onChange={(event) => setPassword(event.target.value)}
           />

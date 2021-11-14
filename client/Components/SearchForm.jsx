@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import  { Redirect } from 'react-router-dom'
-
+import  { Redirect, useHistory } from 'react-router-dom';
+// import ReactDOM from 'react-dom';
+// ReactDom.render()
 
 const StyledSearchForm = styled.div`
   display: flex;
@@ -10,11 +11,13 @@ const StyledSearchForm = styled.div`
 `
 
 function SearchForm() {
-  const [ ingredients, setIngredients ] = useState();
+  let history = useHistory();
+  const [ ingredients, setIngredients ] = useState('');
   const [ mood, setMood ] = useState('');
 
   // object translating user's input mood to API's predetermined list of categories
   const moodList= {
+    'Select a mood': 'Placeholder',
     'Be basic': "Ordinary Drink",
     'Feel fancy': "Cocktail",
     'Party': "Punch / Party Drink",
@@ -36,42 +39,58 @@ function SearchForm() {
 
   // render all keys in the moodList object as options for the user to select
   const moods = Object.keys(moodList).map((elem, index) => {
-    return <option value={elem} key={index.toString()} >{ elem }</option>
+    if (elem === 'Select a mood') {
+      return <option id='select' value='' key={index.toString()} >{ elem }</option>
+    }
+    return <option id={`mood${index}`} value={elem} key={index.toString()} >{ elem }</option>
   }); 
 
   // user has input a mood. Turn that into an API accepted category
   // using the above moodList object. Set the result as our
   // "mood" state.
-  const assignMood = () => {
+  const assignMood = (e) => {
     console.log('assignMood invoked');
+    console.log(e.target.value);
     setMood(moodList[e.target.value]);
   }
 
   const handleSubmit = () => {
-    console.log('handleSubmit invoked');
     // remove all spaces from the user's ingredients input
     const sendIngredients = ingredients.replace(' ', '');
     console.log('finalized ingredients query string', sendIngredients);
+    console.log('mood: ', mood)
+    let drinkObj;
+    let message;
 
     // query the API via the handleSubmit router, passing in the necessary req.querys
-    fetch(`http://localhost:3000/handleSubmit?ingredients=${sendIngredients}&category=${mood}`, (req, res) => {
-      console.log('Fetching from API');
-      let drinkObj;
-      let message;
-      // if message, an object will be returned
-      if (res.data.drinks.suggestion) message = res.data.drinks.suggestion;
-      // otherwise we're recieving an array of objects and want to specify the index we're grabbing
-      else drinkObj = res.data.drinks[0];
-      console.log('API\'s response', res.data.drinks[0] || res.data.drinks.suggestion);
-    })
+    fetch(`/api/handleSubmit?ingredients=${sendIngredients}&category=${mood}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.suggestion) message = data.suggestion;
+        drinkObj = data[0];
+        // console.log('API\'s response', drinkObj || message);
+      })
       // then redirect to the /drink page, passing drinkObj (or message?) as a prop.
-      .then(<Redirect
-        to={{
-          pathname: "/drink",
-          state: { drinkObj }
-        }}
-      />
-      );
+      .then(() => {
+        if (drinkObj) {
+          // ReactDOM.render(<Redirect
+          //   to={{
+          //     pathname: "/drink",
+          //     state: { drinkObj }
+          //   }}
+          //   />, document.getElementById('root')); 
+          history.push({
+            pathname: '/drink',
+            state: {
+              drinkObj
+            }
+          })
+        } else {
+          console.log(message);
+        }
+      }
+      )
+      .catch((err) => console.log(err));
         
   }
 
@@ -85,10 +104,10 @@ function SearchForm() {
           placeholder='Separate each ingredient with a comma...'  
         />
         <h1>I want to...</h1>
-        <select id="moodList" onChange={assignMood} value={mood}>
+        <select id="moodList" onChange={assignMood} >
           { moods }
         </select>
-        <input type='submit' value='Submit' onSubmit={handleSubmit} />
+        <input type='submit' value='Submit' onClick={handleSubmit} />
       </StyledSearchForm>
     </div>
   )
